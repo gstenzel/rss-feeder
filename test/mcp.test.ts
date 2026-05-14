@@ -1,14 +1,11 @@
 import { afterAll, beforeAll, expect, test } from "bun:test";
 import * as fs from "node:fs";
-import type { Server } from "node:http";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { spawnSync } from "bun";
 
-const TEST_PORT = 3001;
 const TEST_DB = "./test-mcp.sqlite";
 const MCP_SOURCE = "./src/mcp.ts";
-let mcpServer: Server | undefined;
 
 function removeTestDb() {
 	for (const path of [TEST_DB, `${TEST_DB}-shm`, `${TEST_DB}-wal`]) {
@@ -18,11 +15,13 @@ function removeTestDb() {
 	}
 }
 
-test("MCP server uses Node-compatible HTTP serving", () => {
+test("MCP server uses stdio without console logging", () => {
 	const source = fs.readFileSync(MCP_SOURCE, "utf8");
 
-	expect(source).toContain('from "node:http"');
-	expect(source).not.toContain("Bun.serve");
+	expect(source).toContain('from "@modelcontextprotocol/sdk/server/stdio.js"');
+	expect(source).not.toContain("node:http");
+	expect(source).not.toContain("streamableHttp");
+	expect(source).not.toContain("console.");
 });
 
 beforeAll(async () => {
@@ -39,20 +38,19 @@ beforeAll(async () => {
 
 	// Set db path for the server we're going to run in the same process
 	process.env.RSS_WATCHER_CLI_DB_PATH = TEST_DB;
-
-	const { runMcp } = await import("../src/mcp");
-	mcpServer = await runMcp(TEST_PORT);
 });
 
 afterAll(() => {
-	mcpServer?.close();
 	removeTestDb();
 });
 
-test("MCP HTTP Server: add and list feed", async () => {
-	// Note: The prompt mentioned StdioClientTransport, but since the server is Streamable HTTP,
-	// we must use StreamableHTTPClientTransport to connect to it.
-	const transport = new StreamableHTTPClientTransport(new URL(`http://localhost:${TEST_PORT}/mcp`));
+test("MCP stdio server: add and list feed", async () => {
+	const transport = new StdioClientTransport({
+		command: "bun",
+		args: ["run", "src/index.ts", "mcp"],
+		env: { ...process.env, RSS_WATCHER_CLI_DB_PATH: TEST_DB },
+		stderr: "pipe",
+	});
 	const client = new Client({ name: "test-client", version: "1.0.0" }, { capabilities: {} });
 
 	await client.connect(transport);
@@ -90,4 +88,5 @@ test("MCP HTTP Server: add and list feed", async () => {
 	});
 
 	await client.close();
+	expect(transport.stderr).not.toBeNull();
 });

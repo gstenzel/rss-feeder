@@ -139,18 +139,14 @@ cli
 		}
 	});
 
-cli
-	.command("mcp", "Start the MCP server")
-	.option("-p, --port <port>", "Port to run the MCP server on")
-	.action(async (options: { port?: number | string }) => {
-		try {
-			const port = options.port ? Number(options.port) : 3000;
-			await runMcp(port);
-		} catch (error) {
-			console.error(`Error starting MCP server: ${error instanceof Error ? error.message : String(error)}`);
-			process.exit(1);
-		}
-	});
+cli.command("mcp", "Start the MCP server").action(async () => {
+	try {
+		await runMcp();
+	} catch (error) {
+		console.error(`Error starting MCP server: ${error instanceof Error ? error.message : String(error)}`);
+		process.exit(1);
+	}
+});
 
 cli.help();
 cli.version(pkg.version);

@@ -9,7 +9,7 @@ A fast, TypeScript-native RSS/JSON feed reader with a built-in [MCP](https://mod
 | **Runtime**              | Bun (fast, single binary)                                                            | Go              |
 | **MCP server**           | ✅ Built-in (`mcp` command)                                                          | ❌              |
 | **AI-agent integration** | Tools for adding feeds, pulling articles, marking read/unread — all callable by LLMs | None            |
-| **Transport**            | Streamable HTTP (Web Standards)                                                      | N/A             |
+| **Transport**            | stdio                                                                                | N/A             |
 | **Feed formats**         | RSS & JSON Feed                                                                      | RSS             |
 | **HTML sanitization**    | Strips tags & limits content length automatically                                    | Raw HTML        |
 
@@ -67,11 +67,8 @@ rss-watcher-cli read-all
 ### MCP server
 
 ```bash
-# Start the MCP server (default port 3000)
+# Start the MCP server over stdio
 rss-watcher-cli mcp
-
-# Custom port
-rss-watcher-cli mcp --port 8080
 ```
 
 The MCP server exposes these tools to AI agents:
