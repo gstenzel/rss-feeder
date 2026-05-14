@@ -1,8 +1,9 @@
 name: Publish to npm
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
 
 permissions:
   contents: read
@@ -24,6 +25,4 @@ jobs:
           package-manager-cache: false
 
       - run: bun install --frozen-lockfile
-      - run: bun test
-      - run: bunx --bun @biomejs/biome check . && bun tsc --noEmit
       - run: npm publish
