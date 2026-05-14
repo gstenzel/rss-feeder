@@ -67,3 +67,13 @@ export function parseSinceDate(value: string, now = new Date()): Date {
 
 	throw new Error("Invalid date or relative duration for --since");
 }
+
+export function parseLimit(value: number | string): number {
+	const normalized = String(value).trim();
+	const limit = Number.parseInt(normalized, 10);
+	if (!/^\d+$/.test(normalized) || limit < 1) {
+		throw new Error("Invalid value for --limit");
+	}
+
+	return limit;
+}

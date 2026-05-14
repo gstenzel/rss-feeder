@@ -90,6 +90,19 @@ test("MCP stdio server: add and list feed", async () => {
 	expect(articlesContent[0]?.type).toBe("text");
 	expect(() => JSON.parse(articlesContent[0]?.text ?? "")).not.toThrow();
 
+	await client.callTool({
+		name: "pull_feeds",
+		arguments: {},
+	});
+
+	const limitedArticlesResult = await client.callTool({
+		name: "list_articles",
+		arguments: { limit: 1 },
+	});
+	const limitedArticlesContent = limitedArticlesResult.content as Array<{ type: string; text: string }>;
+	const limitedArticles = JSON.parse(limitedArticlesContent[0]?.text ?? "");
+	expect(limitedArticles).toHaveLength(1);
+
 	// Remove feed
 	await client.callTool({
 		name: "remove_feed",

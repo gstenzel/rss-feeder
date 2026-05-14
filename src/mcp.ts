@@ -127,9 +127,10 @@ server.registerTool(
 			all: z.boolean().optional(),
 			blogName: z.string().optional(),
 			since: z.string().optional(),
+			limit: z.number().int().positive().optional(),
 		},
 	},
-	async ({ all, blogName, since }) => {
+	async ({ all, blogName, since, limit }) => {
 		let sinceDate: Date | undefined;
 		if (since) {
 			sinceDate = parseSinceDate(since);
@@ -138,6 +139,7 @@ server.registerTool(
 			unreadOnly: !all,
 			blogName: blogName,
 			since: sinceDate,
+			limit,
 		});
 		return {
 			content: [{ type: "text", text: JSON.stringify(articles, null, 2) }],

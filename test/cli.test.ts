@@ -46,6 +46,10 @@ function runCli(args: string[]) {
 	};
 }
 
+function countTableRows(output: string) {
+	return output.split("\n").filter((line) => /^│\s+\d+\s+│/.test(line)).length;
+}
+
 test("Add feed", () => {
 	const result = runCli(["add", "http://feeds.rssboard.org/rssboard"]);
 	expect(result.exitCode).toBe(0);
@@ -69,6 +73,12 @@ test("List articles accepts relative since filter", () => {
 	const result = runCli(["articles", "--since", "24h"]);
 	expect(result.exitCode).toBe(0);
 	expect(result.stderr).not.toContain("Invalid date for --since");
+});
+
+test("List articles limits output rows", () => {
+	const result = runCli(["articles", "--limit", "1"]);
+	expect(result.exitCode).toBe(0);
+	expect(countTableRows(result.stdout)).toBe(1);
 });
 
 test("Remove feed", () => {

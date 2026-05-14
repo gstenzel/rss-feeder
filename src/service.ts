@@ -197,7 +197,7 @@ export class FeedService {
 	/**
 	 * List articles with filters.
 	 */
-	async getArticles(options: { unreadOnly?: boolean; blogName?: string; since?: Date } = {}) {
+	async getArticles(options: { unreadOnly?: boolean; blogName?: string; since?: Date; limit?: number } = {}) {
 		const conditions = [];
 
 		if (options.unreadOnly) {
@@ -239,11 +239,17 @@ export class FeedService {
 		const result = await query.all();
 
 		// Sort manually for robust fallback handling if publishedAt is null
-		return result.sort((a, b) => {
+		const sorted = result.sort((a, b) => {
 			const dateA = a.publishedAt ? a.publishedAt.getTime() : 0;
 			const dateB = b.publishedAt ? b.publishedAt.getTime() : 0;
 			return dateB - dateA;
 		});
+
+		if (options.limit !== undefined) {
+			return sorted.slice(0, options.limit);
+		}
+
+		return sorted;
 	}
 
 	/**

@@ -2,7 +2,7 @@ import { cac } from "cac";
 import pkg from "../package.json";
 import { runMcp } from "./mcp";
 import { feedService } from "./service";
-import { parseSinceDate } from "./utils";
+import { parseLimit, parseSinceDate } from "./utils";
 
 const cli = cac(pkg.name);
 
@@ -104,17 +104,23 @@ cli
 	.option("--all", "Show all articles, including read ones")
 	.option("--blog <name>", "Filter by blog name")
 	.option("--since <date>", "Filter by published date (ISO string or relative duration like 24h)")
-	.action(async (options: { all?: boolean; blog?: string; since?: string }) => {
+	.option("--limit <number>", "Limit the number of articles shown")
+	.action(async (options: { all?: boolean; blog?: string; since?: string; limit?: number | string }) => {
 		try {
 			let sinceDate: Date | undefined;
 			if (options.since) {
 				sinceDate = parseSinceDate(options.since);
+			}
+			let limit: number | undefined;
+			if (options.limit) {
+				limit = parseLimit(options.limit);
 			}
 
 			const articles = await feedService.getArticles({
 				unreadOnly: !options.all,
 				blogName: options.blog,
 				since: sinceDate,
+				limit,
 			});
 
 			if (articles.length === 0) {

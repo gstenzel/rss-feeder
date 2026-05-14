@@ -58,6 +58,7 @@ rss-watcher-cli articles --all
 rss-watcher-cli articles --blog "My Blog"
 rss-watcher-cli articles --since 2025-01-01
 rss-watcher-cli articles --since 24h
+rss-watcher-cli articles --limit 10
 
 # Mark articles as read/unread
 rss-watcher-cli read 42

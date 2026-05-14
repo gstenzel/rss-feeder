@@ -2,7 +2,7 @@ import { afterEach, expect, test } from "bun:test";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
-import { getDbPath, parseSinceDate } from "../src/utils";
+import { getDbPath, parseLimit, parseSinceDate } from "../src/utils";
 
 const dbPath = path.join(os.tmpdir(), `rss-watcher-cli-${process.pid}.sqlite`);
 
@@ -37,4 +37,13 @@ test("parseSinceDate accepts relative day durations with whitespace", () => {
 
 test("parseSinceDate rejects invalid relative durations", () => {
 	expect(() => parseSinceDate("soon")).toThrow("Invalid date or relative duration for --since");
+});
+
+test("parseLimit accepts positive integers", () => {
+	expect(parseLimit("10")).toBe(10);
+});
+
+test("parseLimit rejects zero and non-integers", () => {
+	expect(() => parseLimit("0")).toThrow("Invalid value for --limit");
+	expect(() => parseLimit("1.5")).toThrow("Invalid value for --limit");
 });
