@@ -9,6 +9,7 @@
 	"files": [
 		"src"
 	],
+	"bin": "./dist/index.js",
 	"publishConfig": {
 		"access": "public"
 	},
@@ -33,7 +34,9 @@
 		"cli": "bun run src/index.ts",
 		"mcp": "bun run src/index.ts mcp",
 		"release": "npm version patch && git push --follow-tags",
-		"test": "bun test"
+		"test": "bun test",
+		"build": "bun build ./src/index.ts --target node --format esm --packages external --outfile ./dist/index.js --banner '#!/usr/bin/env node'",
+		"prepack": "bun run build"
 	},
 	"module": "src/index.ts",
 	"type": "module",
