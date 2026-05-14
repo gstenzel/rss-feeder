@@ -3,6 +3,7 @@ import * as fs from "node:fs";
 import { spawnSync } from "bun";
 
 const TEST_DB = "./test-e2e.sqlite";
+const TEST_FRESH_DB = "./test-fresh.sqlite";
 
 beforeAll(() => {
 	// Push schema to the test DB
@@ -24,6 +25,15 @@ afterAll(() => {
 	}
 	if (fs.existsSync(`${TEST_DB}-wal`)) {
 		fs.unlinkSync(`${TEST_DB}-wal`);
+	}
+	if (fs.existsSync(TEST_FRESH_DB)) {
+		fs.unlinkSync(TEST_FRESH_DB);
+	}
+	if (fs.existsSync(`${TEST_FRESH_DB}-shm`)) {
+		fs.unlinkSync(`${TEST_FRESH_DB}-shm`);
+	}
+	if (fs.existsSync(`${TEST_FRESH_DB}-wal`)) {
+		fs.unlinkSync(`${TEST_FRESH_DB}-wal`);
 	}
 });
 
@@ -67,4 +77,14 @@ test("No arguments shows help", () => {
 	expect(result.stdout).toContain("Usage:");
 	expect(result.stdout).toContain("Commands:");
 	expect(result.stdout).toContain("rss-watcher-cli");
+});
+
+test("initializes a fresh database before running commands", () => {
+	if (fs.existsSync(TEST_FRESH_DB)) {
+		fs.unlinkSync(TEST_FRESH_DB);
+	}
+
+	const result = spawnSync(["bun", "run", "src/index.ts", "--db", TEST_FRESH_DB, "blogs"]);
+	expect(result.exitCode).toBe(0);
+	expect(result.stdout?.toString() || "").toContain("No blogs found");
 });
