@@ -1,6 +1,13 @@
 {
 	"name": "rss-feeder",
 	"version": "1.0.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gstenzel/rss-feeder.git"
+	},
+	"files": [
+		"src"
+	],
 	"publishConfig": {
 		"access": "public"
 	},
@@ -23,7 +30,8 @@
 		"db:generate": "drizzle-kit generate",
 		"check": "bunx --bun @biomejs/biome check --write && bun tsc --noEmit && echo 'all checks passed'",
 		"cli": "bun run src/index.ts",
-		"mcp": "bun run src/index.ts mcp"
+		"mcp": "bun run src/index.ts mcp",
+		"test": "bun test"
 	},
 	"module": "src/index.ts",
 	"type": "module",
