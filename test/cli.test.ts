@@ -7,7 +7,7 @@ const TEST_DB = "./test-e2e.sqlite";
 beforeAll(() => {
 	// Push schema to the test DB
 	const push = spawnSync(["bunx", "drizzle-kit", "push"], {
-		env: { ...process.env, RSS_FEEDER_DB_PATH: TEST_DB },
+		env: { ...process.env, RSS_WATCHER_CLI_DB_PATH: TEST_DB },
 	});
 	if (push.exitCode !== 0) {
 		console.error(push.stderr?.toString());
@@ -66,5 +66,5 @@ test("No arguments shows help", () => {
 	expect(result.exitCode).toBe(0);
 	expect(result.stdout).toContain("Usage:");
 	expect(result.stdout).toContain("Commands:");
-	expect(result.stdout).toContain("rss-feeder");
+	expect(result.stdout).toContain("rss-watcher-cli");
 });

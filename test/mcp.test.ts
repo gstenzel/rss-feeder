@@ -20,7 +20,7 @@ beforeAll(async () => {
 
 	// Push schema to the test DB
 	const push = spawnSync(["bunx", "drizzle-kit", "push"], {
-		env: { ...process.env, RSS_FEEDER_DB_PATH: TEST_DB },
+		env: { ...process.env, RSS_WATCHER_CLI_DB_PATH: TEST_DB },
 	});
 	if (push.exitCode !== 0) {
 		console.error(push.stderr?.toString());
@@ -28,7 +28,7 @@ beforeAll(async () => {
 	}
 
 	// Set db path for the server we're going to run in the same process
-	process.env.RSS_FEEDER_DB_PATH = TEST_DB;
+	process.env.RSS_WATCHER_CLI_DB_PATH = TEST_DB;
 
 	const { runMcp } = await import("../src/mcp");
 	await runMcp(TEST_PORT);

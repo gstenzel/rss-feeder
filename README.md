@@ -1,10 +1,10 @@
-# rss-feeder
+# rss-watcher-cli
 
 A fast, TypeScript-native RSS/JSON feed reader with a built-in [MCP](https://modelcontextprotocol.io/) server. Built on [Bun](https://bun.sh/) and SQLite.
 
-## Why rss-feeder over blogwatcher-cli?
+## Why rss-watcher-cli over blogwatcher-cli?
 
-|                          | rss-feeder                                                                           | blogwatcher-cli |
+|                          | rss-watcher-cli                                                                      | blogwatcher-cli |
 | ------------------------ | ------------------------------------------------------------------------------------ | --------------- |
 | **Runtime**              | Bun (fast, single binary)                                                            | Go              |
 | **MCP server**           | ✅ Built-in (`mcp` command)                                                          | ❌              |
@@ -13,7 +13,7 @@ A fast, TypeScript-native RSS/JSON feed reader with a built-in [MCP](https://mod
 | **Feed formats**         | RSS & JSON Feed                                                                      | RSS             |
 | **HTML sanitization**    | Strips tags & limits content length automatically                                    | Raw HTML        |
 
-The headline feature is the **MCP server**: run `rss-feeder mcp` and any MCP-compatible client (Claude Desktop, Cursor, custom agents) can manage your feeds and read articles programmatically.
+The headline feature is the **MCP server**: run `rss-watcher-cli mcp` and any MCP-compatible client (Claude Desktop, Cursor, custom agents) can manage your feeds and read articles programmatically.
 
 ## Installation
 
@@ -24,54 +24,54 @@ bun install
 ## Usage
 
 ```
-$ rss-feeder <command> [options]
+$ rss-watcher-cli <command> [options]
 ```
 
 ### Managing feeds
 
 ```bash
 # Add a feed
-rss-feeder add https://example.com/feed.xml
-rss-feeder add https://example.com/feed.xml --name "My Blog"
+rss-watcher-cli add https://example.com/feed.xml
+rss-watcher-cli add https://example.com/feed.xml --name "My Blog"
 
 # Remove a feed by name or URL
-rss-feeder remove "My Blog"
-rss-feeder remove https://example.com/feed.xml
+rss-watcher-cli remove "My Blog"
+rss-watcher-cli remove https://example.com/feed.xml
 
 # List all tracked blogs
-rss-feeder blogs
+rss-watcher-cli blogs
 ```
 
 ### Reading articles
 
 ```bash
 # Pull new articles from all feeds
-rss-feeder pull
+rss-watcher-cli pull
 
 # List unread articles
-rss-feeder articles
+rss-watcher-cli articles
 
 # List all articles (including read)
-rss-feeder articles --all
+rss-watcher-cli articles --all
 
 # Filter by blog name or date
-rss-feeder articles --blog "My Blog"
-rss-feeder articles --since 2025-01-01
+rss-watcher-cli articles --blog "My Blog"
+rss-watcher-cli articles --since 2025-01-01
 
 # Mark articles as read/unread
-rss-feeder read 42
-rss-feeder unread 42
-rss-feeder read-all
+rss-watcher-cli read 42
+rss-watcher-cli unread 42
+rss-watcher-cli read-all
 ```
 
 ### MCP server
 
 ```bash
 # Start the MCP server (default port 3000)
-rss-feeder mcp
+rss-watcher-cli mcp
 
 # Custom port
-rss-feeder mcp --port 8080
+rss-watcher-cli mcp --port 8080
 ```
 
 The MCP server exposes these tools to AI agents:

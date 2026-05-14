@@ -161,5 +161,5 @@ export async function runMcp(port = 3000) {
 		},
 	});
 
-	console.error(`RSS Feeder MCP server running on http://localhost:${port}`);
+	console.error(`RSS Watcher CLI MCP server running on http://localhost:${port}`);
 }

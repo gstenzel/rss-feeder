@@ -25,7 +25,7 @@ export async function fetchWithLimits(
 
 	while (true) {
 		const headers = new Headers();
-		headers.set("User-Agent", "rss-feeder/1.0");
+		headers.set("User-Agent", "rss-watcher-cli/1.0");
 
 		if (options.etag) {
 			headers.set("If-None-Match", options.etag);
