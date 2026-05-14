@@ -1,0 +1,266 @@
+{
+	"version": "6",
+	"dialect": "sqlite",
+	"id": "703ce79b-d2c2-48a0-9e39-731c3aadd963",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"tables": {
+		"articles": {
+			"name": "articles",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "integer",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": true
+				},
+				"blogId": {
+					"name": "blogId",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"articleKey": {
+					"name": "articleKey",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"guid": {
+					"name": "guid",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"title": {
+					"name": "title",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"url": {
+					"name": "url",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"author": {
+					"name": "author",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"summary": {
+					"name": "summary",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"content": {
+					"name": "content",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"publishedAt": {
+					"name": "publishedAt",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"discoveredAt": {
+					"name": "discoveredAt",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "(unixepoch())"
+				},
+				"readAt": {
+					"name": "readAt",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				}
+			},
+			"indexes": {
+				"articles_articleKey_unique": {
+					"name": "articles_articleKey_unique",
+					"columns": ["articleKey"],
+					"isUnique": true
+				},
+				"articles_blog_idx": {
+					"name": "articles_blog_idx",
+					"columns": ["blogId"],
+					"isUnique": false
+				},
+				"articles_read_idx": {
+					"name": "articles_read_idx",
+					"columns": ["readAt"],
+					"isUnique": false
+				},
+				"articles_published_idx": {
+					"name": "articles_published_idx",
+					"columns": ["publishedAt"],
+					"isUnique": false
+				},
+				"articles_blog_published_idx": {
+					"name": "articles_blog_published_idx",
+					"columns": ["blogId", "publishedAt"],
+					"isUnique": false
+				}
+			},
+			"foreignKeys": {
+				"articles_blogId_blogs_id_fk": {
+					"name": "articles_blogId_blogs_id_fk",
+					"tableFrom": "articles",
+					"tableTo": "blogs",
+					"columnsFrom": ["blogId"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		},
+		"blogs": {
+			"name": "blogs",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "integer",
+					"primaryKey": true,
+					"notNull": true,
+					"autoincrement": true
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"url": {
+					"name": "url",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
+				"siteUrl": {
+					"name": "siteUrl",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"feedTitle": {
+					"name": "feedTitle",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"etag": {
+					"name": "etag",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"lastModified": {
+					"name": "lastModified",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"lastCheckedAt": {
+					"name": "lastCheckedAt",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"lastSuccessAt": {
+					"name": "lastSuccessAt",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"lastError": {
+					"name": "lastError",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false,
+					"autoincrement": false
+				},
+				"createdAt": {
+					"name": "createdAt",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "(unixepoch())"
+				},
+				"updatedAt": {
+					"name": "updatedAt",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false,
+					"default": "(unixepoch())"
+				}
+			},
+			"indexes": {
+				"blogs_name_unique": {
+					"name": "blogs_name_unique",
+					"columns": ["name"],
+					"isUnique": true
+				},
+				"blogs_url_unique": {
+					"name": "blogs_url_unique",
+					"columns": ["url"],
+					"isUnique": true
+				},
+				"blogs_name_idx": {
+					"name": "blogs_name_idx",
+					"columns": ["name"],
+					"isUnique": true
+				},
+				"blogs_url_idx": {
+					"name": "blogs_url_idx",
+					"columns": ["url"],
+					"isUnique": true
+				}
+			},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"checkConstraints": {}
+		}
+	},
+	"views": {},
+	"enums": {},
+	"_meta": {
+		"schemas": {},
+		"tables": {},
+		"columns": {}
+	},
+	"internal": {
+		"indexes": {}
+	}
+}
