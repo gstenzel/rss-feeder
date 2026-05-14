@@ -32,6 +32,7 @@
 		"check": "bunx --bun @biomejs/biome check --write && bun tsc --noEmit && echo 'all checks passed'",
 		"cli": "bun run src/index.ts",
 		"mcp": "bun run src/index.ts mcp",
+		"release": "npm version patch && git push --follow-tags",
 		"test": "bun test"
 	},
 	"module": "src/index.ts",
