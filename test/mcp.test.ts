@@ -3,12 +3,21 @@ import * as fs from "node:fs";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { spawnSync } from "bun";
-import { runMcp } from "../src/mcp";
 
 const TEST_PORT = 3001;
 const TEST_DB = "./test-mcp.sqlite";
 
+function removeTestDb() {
+	for (const path of [TEST_DB, `${TEST_DB}-shm`, `${TEST_DB}-wal`]) {
+		if (fs.existsSync(path)) {
+			fs.unlinkSync(path);
+		}
+	}
+}
+
 beforeAll(async () => {
+	removeTestDb();
+
 	// Push schema to the test DB
 	const push = spawnSync(["bunx", "drizzle-kit", "push"], {
 		env: { ...process.env, RSS_FEEDER_DB_PATH: TEST_DB },
@@ -21,19 +30,12 @@ beforeAll(async () => {
 	// Set db path for the server we're going to run in the same process
 	process.env.RSS_FEEDER_DB_PATH = TEST_DB;
 
+	const { runMcp } = await import("../src/mcp");
 	await runMcp(TEST_PORT);
 });
 
 afterAll(() => {
-	if (fs.existsSync(TEST_DB)) {
-		fs.unlinkSync(TEST_DB);
-	}
-	if (fs.existsSync(`${TEST_DB}-shm`)) {
-		fs.unlinkSync(`${TEST_DB}-shm`);
-	}
-	if (fs.existsSync(`${TEST_DB}-wal`)) {
-		fs.unlinkSync(`${TEST_DB}-wal`);
-	}
+	removeTestDb();
 });
 
 test("MCP HTTP Server: add and list feed", async () => {
