@@ -57,6 +57,7 @@ rss-watcher-cli articles --all
 # Filter by blog name or date
 rss-watcher-cli articles --blog "My Blog"
 rss-watcher-cli articles --since 2025-01-01
+rss-watcher-cli articles --since 24h
 
 # Mark articles as read/unread
 rss-watcher-cli read 42

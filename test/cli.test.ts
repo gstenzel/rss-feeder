@@ -65,6 +65,12 @@ test("List articles", () => {
 	expect(result.stdout).not.toContain("No articles found");
 });
 
+test("List articles accepts relative since filter", () => {
+	const result = runCli(["articles", "--since", "24h"]);
+	expect(result.exitCode).toBe(0);
+	expect(result.stderr).not.toContain("Invalid date for --since");
+});
+
 test("Remove feed", () => {
 	const result = runCli(["remove", "http://feeds.rssboard.org/rssboard"]);
 	expect(result.exitCode).toBe(0);

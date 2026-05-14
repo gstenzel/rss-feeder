@@ -81,6 +81,15 @@ test("MCP stdio server: add and list feed", async () => {
 	expect(blogs.length).toBe(1);
 	expect(blogs[0].url).toBe("http://feeds.rssboard.org/rssboard");
 
+	const articlesResult = await client.callTool({
+		name: "list_articles",
+		arguments: { since: "24h" },
+	});
+
+	const articlesContent = articlesResult.content as Array<{ type: string; text: string }>;
+	expect(articlesContent[0]?.type).toBe("text");
+	expect(() => JSON.parse(articlesContent[0]?.text ?? "")).not.toThrow();
+
 	// Remove feed
 	await client.callTool({
 		name: "remove_feed",

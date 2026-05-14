@@ -3,6 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import pkg from "../package.json";
 import { feedService } from "./service";
+import { parseSinceDate } from "./utils";
 
 const server = new McpServer({
 	name: pkg.name,
@@ -125,13 +126,13 @@ server.registerTool(
 		inputSchema: {
 			all: z.boolean().optional(),
 			blogName: z.string().optional(),
-			since: z.string().datetime().optional(),
+			since: z.string().optional(),
 		},
 	},
 	async ({ all, blogName, since }) => {
 		let sinceDate: Date | undefined;
 		if (since) {
-			sinceDate = new Date(since);
+			sinceDate = parseSinceDate(since);
 		}
 		const articles = await feedService.getArticles({
 			unreadOnly: !all,

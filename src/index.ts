@@ -2,6 +2,7 @@ import { cac } from "cac";
 import pkg from "../package.json";
 import { runMcp } from "./mcp";
 import { feedService } from "./service";
+import { parseSinceDate } from "./utils";
 
 const cli = cac(pkg.name);
 
@@ -102,15 +103,12 @@ cli
 	.command("articles", "List articles")
 	.option("--all", "Show all articles, including read ones")
 	.option("--blog <name>", "Filter by blog name")
-	.option("--since <date>", "Filter by published date (ISO string)")
+	.option("--since <date>", "Filter by published date (ISO string or relative duration like 24h)")
 	.action(async (options: { all?: boolean; blog?: string; since?: string }) => {
 		try {
 			let sinceDate: Date | undefined;
 			if (options.since) {
-				sinceDate = new Date(options.since);
-				if (Number.isNaN(sinceDate.getTime())) {
-					throw new Error("Invalid date for --since");
-				}
+				sinceDate = parseSinceDate(options.since);
 			}
 
 			const articles = await feedService.getArticles({
