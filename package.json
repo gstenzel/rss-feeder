@@ -1,6 +1,7 @@
 {
 	"name": "rss-watcher-cli",
 	"version": "1.0.3",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/gstenzel/rss-feeder.git"
