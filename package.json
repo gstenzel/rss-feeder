@@ -1,5 +1,5 @@
 {
-	"name": "rss-feeder",
+	"name": "rss-watcher-cli",
 	"version": "1.0.1",
 	"repository": {
 		"type": "git",
