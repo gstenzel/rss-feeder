@@ -1,5 +1,7 @@
+import { randomUUID } from "node:crypto";
+import { createServer } from "node:http";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import pkg from "../package.json";
 import { feedService } from "./service";
@@ -145,21 +147,41 @@ server.registerTool(
 );
 
 export async function runMcp(port = 3000) {
-	const transport = new WebStandardStreamableHTTPServerTransport({
-		sessionIdGenerator: () => crypto.randomUUID(),
+	const transport = new StreamableHTTPServerTransport({
+		sessionIdGenerator: () => randomUUID(),
 	});
 	await server.connect(transport);
 
-	Bun.serve({
-		port,
-		async fetch(request) {
-			const response = await transport.handleRequest(request);
-			if (!response.ok) {
-				console.error("Transport error", response.status, await response.clone().text());
+	const httpServer = createServer(async (request, response) => {
+		try {
+			await transport.handleRequest(request, response);
+		} catch (error) {
+			console.error("Transport error", error);
+			if (!response.headersSent) {
+				response.writeHead(500, { "Content-Type": "application/json" });
 			}
-			return response;
-		},
+			response.end(
+				JSON.stringify({
+					jsonrpc: "2.0",
+					error: {
+						code: -32603,
+						message: "Internal server error",
+					},
+					id: null,
+				}),
+			);
+		}
+	});
+
+	await new Promise<void>((resolve, reject) => {
+		httpServer.once("error", reject);
+		httpServer.listen(port, () => {
+			httpServer.off("error", reject);
+			resolve();
+		});
 	});
 
 	console.error(`RSS Watcher CLI MCP server running on http://localhost:${port}`);
+
+	return httpServer;
 }

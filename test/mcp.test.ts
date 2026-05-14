@@ -1,11 +1,14 @@
 import { afterAll, beforeAll, expect, test } from "bun:test";
 import * as fs from "node:fs";
+import type { Server } from "node:http";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { spawnSync } from "bun";
 
 const TEST_PORT = 3001;
 const TEST_DB = "./test-mcp.sqlite";
+const MCP_SOURCE = "./src/mcp.ts";
+let mcpServer: Server | undefined;
 
 function removeTestDb() {
 	for (const path of [TEST_DB, `${TEST_DB}-shm`, `${TEST_DB}-wal`]) {
@@ -14,6 +17,13 @@ function removeTestDb() {
 		}
 	}
 }
+
+test("MCP server uses Node-compatible HTTP serving", () => {
+	const source = fs.readFileSync(MCP_SOURCE, "utf8");
+
+	expect(source).toContain('from "node:http"');
+	expect(source).not.toContain("Bun.serve");
+});
 
 beforeAll(async () => {
 	removeTestDb();
@@ -31,10 +41,11 @@ beforeAll(async () => {
 	process.env.RSS_WATCHER_CLI_DB_PATH = TEST_DB;
 
 	const { runMcp } = await import("../src/mcp");
-	await runMcp(TEST_PORT);
+	mcpServer = await runMcp(TEST_PORT);
 });
 
 afterAll(() => {
+	mcpServer?.close();
 	removeTestDb();
 });
 
